@@ -71,6 +71,20 @@
       </div>
     </div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      // Ultimate fail-safe: make sure the preloader is faded out and deleted after 1.2 seconds under any circumstances
+      setTimeout(function() {
+        var preloader = document.getElementById('preloader');
+        if (preloader) {
+          preloader.style.opacity = '0';
+          setTimeout(function() {
+            if (preloader.parentNode) {
+              preloader.remove();
+            }
+          }, 400);
+        }
+      }, 1200);
+    </script>
   </body>
 </html>
 

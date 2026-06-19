@@ -44,6 +44,22 @@ const AnimatedRoutes: React.FC = () => {
 };
 
 export default function App() {
+  React.useEffect(() => {
+    try {
+      const preloader = document.getElementById("preloader");
+      if (preloader) {
+        preloader.style.opacity = "0";
+        setTimeout(() => {
+          if (preloader.parentNode) {
+            preloader.remove();
+          }
+        }, 400);
+      }
+    } catch (e) {
+      console.warn("React preloader removal warning:", e);
+    }
+  }, []);
+
   return (
     <Router>
       <AnimatedRoutes />
