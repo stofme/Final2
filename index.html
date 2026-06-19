@@ -61,29 +61,16 @@
     </style>
   </head>
   <body>
-    <div id="root">
-      <!-- High-fidelity, elegant pre-rendered placeholder index state -->
-      <div id="preloader">
-        <div class="loader-container">
-          <div class="loader-spinner"></div>
-          <div class="loader-logo">Briefify</div>
-          <div class="loader-text">Initializing Engine...</div>
-        </div>
+    <div id="root"></div>
+    <!-- High-fidelity, elegant pre-rendered placeholder index state -->
+    <div id="preloader">
+      <div class="loader-container">
+        <div class="loader-spinner"></div>
+        <div class="loader-logo">Briefify</div>
+        <div class="loader-text">Initializing Engine...</div>
       </div>
     </div>
     <script type="module" src="/src/main.tsx"></script>
-    <script>
-      // Automatically fade out and remove preloader once React mounts
-      window.addEventListener('DOMContentLoaded', () => {
-        const preloader = document.getElementById('preloader');
-        if (preloader) {
-          setTimeout(() => {
-            preloader.style.opacity = '0';
-            setTimeout(() => preloader.remove(), 400);
-          }, 300);
-        }
-      });
-    </script>
   </body>
 </html>
 

@@ -67,14 +67,86 @@ export const Generator: React.FC = () => {
             projectTypePreference: projectType || undefined
           })
         });
+        
+        if (!res.ok) {
+          throw new Error(`HTTP error ${res.status}`);
+        }
+        
         const data = await res.json();
         if (data.brief) {
           setGeneratedBrief(data.brief);
+          return;
         } else {
-          console.error("No brief received inside body", data);
+          throw new Error("No brief in body");
         }
       } catch (err) {
-        console.error("API call error:", err);
+        console.warn("API call failed or unavailable (e.g. GitHub pages static server fallback). Synthesizing offline procedural brief:", err);
+        
+        // Procedural generator helpers
+        const pickRandom = <T,>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
+        const pickMultipleRandom = <T,>(arr: T[], count: number): T[] => {
+          const shuffled = [...arr].sort(() => 0.5 - Math.random());
+          return shuffled.slice(0, count);
+        };
+
+        const FALLBACK_CLIENTS = ["Lumina Global", "Solaris Tech", "Evergreen Organic", "Nova Stream", "Peak Performance", "Velvet & Vine", "Prisma Arch", "Nexus Fintech", "Terra Flora", "Orbit Robotics", "Bloom Beauty", "North Star Apps", "Echo Peak", "Bloom Digital", "AeroVelo", "Quasar Web", "Zenith Wear", "PentaCorp"];
+        const FALLBACK_AUDIENCES = ["Gen Z Digital Nomads", "High-Net-Worth Investors", "First-Time Homeowners", "Eco-Conscious Parents", "Casual Gamers", "Corporate Executives", "Aspiring Entrepreneurs", "Local Artisans", "Design Students", "Tech Enthusiasts"];
+        const FALLBACK_PERSONALITIES = ["Bold & Disruptive", "Minimal & Clean", "Friendly & Approachable", "Sophisticated & Elegant", "Energetic & Playful", "Trustworthy & Stable", "Futuristic & Tech-Forward", "Raw & Brutalist"];
+        const FALLBACK_GOALS = [
+          "Design an organic layout with ample whitespace highlighting pure formulations and natural ingredients.",
+          "Draft a bold web presence maximizing micro-animations, neon brand accent colors, and brutalist layouts.",
+          "Formulate an accessible, highly readable visual guide targeting non-technical senior custom clients.",
+          "Formulate an elite high-contrast dark visual system to reduce screen stress during high-intensity trading.",
+          "Map out a friendly digital product tour flow to streamline first-time user activation onboards."
+        ];
+        const FALLBACK_DELIVERABLES = [
+          "Logo Suite, Brand Typography Guidelines, and interactive UI component guidelines.",
+          "Fully-interactive 10-Page custom desktop layout prototypes and packaging guidelines.",
+          "Responsive mobile layouts, brand style sheets, and three customizable social media templates.",
+          "Interactive dashboard mockups with consistent button guidelines and detailed layout grids.",
+          "Vector physical box illustrations, raw material details, and brand identity style guides."
+        ];
+        const FALLBACK_CONSTRAINTS = ["No use of gradients", "Mobile-first approach only", "Use strictly monochrome colors", "Must feature hand-drawn elements", "Avoid photography entirely", "Maximum of two typefaces", "Primary background must be high-contrast light"];
+        const FALLBACK_DEADLINES = ["2 Weeks (Sprint)", "1 Month", "45 Days", "Q3 2026", "ASAP (Urgent)", "End of Quarter"];
+        const FALLBACK_DIRECTIONS = ["Brutalist", "Soft Minimalism", "Swiss Style", "Cyberpunk", "Art Deco", "Rustic Modern", "Neo-Memphis", "Organic Fluidity", "Geometric", "Editorial Serif"];
+        const FALLBACK_KEYWORDS = ["Agile", "Lush", "Crisp", "Nostalgic", "Vibrant", "Understated", "Dynamic", "Structured", "Whimsical", "Pristine", "Sleek", "Cohesive"];
+        const FALLBACK_PALETTES = [
+          ["#1A1A1A", "#EAE7DF", "#D6D1C5", "#736F63"],
+          ["#1A1A1A", "#3D5A80", "#98C1D9", "#E0F2F1"],
+          ["#1A1A1A", "#2B2E4A", "#E84545", "#903749"],
+          ["#1A1A1A", "#0F4C81", "#F5F5F5", "#D8C3A5"],
+          ["#1A1A1A", "#2E6F40", "#A8DADC", "#457B9D"]
+        ];
+        const FALLBACK_TYPEFACES = [
+          { head: "Space Grotesk", body: "Inter", weight: "700" },
+          { head: "Playfair Display", body: "Inter", weight: "600" },
+          { head: "Outfit", body: "Inter", weight: "700" },
+          { head: "JetBrains Mono", body: "Inter", weight: "600" }
+        ];
+
+        const finalIndustry = industry || pickRandom(INDUSTRIES);
+        const finalProjectType = projectType || pickRandom(PROJECT_TYPES);
+
+        const syntheticBrief: DesignBrief = {
+          id: Date.now().toString(),
+          clientName: pickRandom(FALLBACK_CLIENTS),
+          industry: finalIndustry,
+          projectType: finalProjectType,
+          targetAudience: pickRandom(FALLBACK_AUDIENCES),
+          brandPersonality: pickRandom(FALLBACK_PERSONALITIES),
+          projectGoal: pickRandom(FALLBACK_GOALS),
+          deliverables: pickRandom(FALLBACK_DELIVERABLES),
+          constraint: pickRandom(FALLBACK_CONSTRAINTS),
+          deadline: pickRandom(FALLBACK_DEADLINES),
+          visualDirections: pickMultipleRandom(FALLBACK_DIRECTIONS, 3),
+          keywords: pickMultipleRandom(FALLBACK_KEYWORDS, 4),
+          searchTerms: `"${finalIndustry} ${finalProjectType} inspiration minimalist"`,
+          colorPalette: pickRandom(FALLBACK_PALETTES),
+          typography: pickRandom(FALLBACK_TYPEFACES),
+          createdAt: new Date().toISOString()
+        };
+
+        setGeneratedBrief(syntheticBrief);
       } finally {
         setLoading(false);
       }
