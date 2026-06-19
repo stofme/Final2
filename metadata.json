@@ -1,0 +1,6 @@
+{
+  "name": "Briefify",
+  "description": "AI-powered design brief generator to practice skills, generate ideas, and build a high-quality portfolio.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
