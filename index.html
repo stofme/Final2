@@ -70,9 +70,66 @@
         <div class="loader-text">Initializing Engine...</div>
       </div>
     </div>
-    <script type="module" src="/src/main.tsx"></script>
+    <script type="module" src="./src/main.tsx"></script>
     <script>
-      // Ultimate fail-safe: make sure the preloader is faded out and deleted after 1.2 seconds under any circumstances
+      // Catch any runtime error or script loading fail and show on-screen error diagnostics
+      window.addEventListener('error', function(event) {
+        var errorDiv = document.createElement('div');
+        errorDiv.style.position = 'fixed';
+        errorDiv.style.top = '10px';
+        errorDiv.style.left = '10px';
+        errorDiv.style.right = '10px';
+        errorDiv.style.backgroundColor = '#FFF0F0';
+        errorDiv.style.color = '#B71C1C';
+        errorDiv.style.padding = '20px';
+        errorDiv.style.border = '2px solid #E57373';
+        errorDiv.style.fontFamily = 'monospace';
+        errorDiv.style.fontSize = '12px';
+        errorDiv.style.whiteSpace = 'pre-wrap';
+        errorDiv.style.zIndex = '1000000';
+        errorDiv.style.overflowY = 'auto';
+        errorDiv.style.maxHeight = '90vh';
+        errorDiv.innerHTML = '<strong>[Runtime Diagnostics Error]</strong><br><br>' + 
+          'Message: ' + event.message + '<br>' +
+          'Source: ' + event.filename + ':' + event.lineno + ':' + event.colno + '<br><br>' +
+          'Stack Trace:<br>' + (event.error ? event.error.stack : 'N/A');
+        document.body.appendChild(errorDiv);
+        
+        // Hide loader so the error message is visible
+        var preloader = document.getElementById('preloader');
+        if (preloader) {
+          preloader.style.display = 'none';
+        }
+      });
+      
+      // Catch unhandled promise rejections (often from API calls)
+      window.addEventListener('unhandledrejection', function(event) {
+        var errorDiv = document.createElement('div');
+        errorDiv.style.position = 'fixed';
+        errorDiv.style.top = '10px';
+        errorDiv.style.left = '10px';
+        errorDiv.style.right = '10px';
+        errorDiv.style.backgroundColor = '#FFF0F0';
+        errorDiv.style.color = '#B71C1C';
+        errorDiv.style.padding = '20px';
+        errorDiv.style.border = '2px solid #E57373';
+        errorDiv.style.fontFamily = 'monospace';
+        errorDiv.style.fontSize = '12px';
+        errorDiv.style.whiteSpace = 'pre-wrap';
+        errorDiv.style.zIndex = '1000000';
+        errorDiv.style.overflowY = 'auto';
+        errorDiv.style.maxHeight = '90vh';
+        errorDiv.innerHTML = '<strong>[Unhandled Promise Rejection]</strong><br><br>' + 
+          'Reason: ' + (event.reason ? (event.reason.stack || event.reason.message || event.reason) : 'Unknown Reason');
+        document.body.appendChild(errorDiv);
+        
+        var preloader = document.getElementById('preloader');
+        if (preloader) {
+          preloader.style.display = 'none';
+        }
+      });
+
+      // Ultimate fail-safe: make sure the preloader is faded out and deleted after 3 seconds under any circumstances
       setTimeout(function() {
         var preloader = document.getElementById('preloader');
         if (preloader) {
@@ -83,7 +140,7 @@
             }
           }, 400);
         }
-      }, 1200);
+      }, 3000);
     </script>
   </body>
 </html>
